@@ -1,0 +1,16 @@
+How to Modify the Database Tables with Migrations
+
+1. Run the following (making sure to replace the variable in the migration name):
+npx knex migrate:make migration_{whatever_you_doing}
+2. Manually edit the migration file with knex code to modify your database (see blog post below)
+See https://www.heady.io/blog/knex-migration-for-schema-and-seeds-with-postgresql
+3. Run 
+npx knex migrate:latest
+4. Check your database
+
+How to Seed Database
+1. Run the following:
+npx knex seed:make {some positive integer}_seed_{some model name}
+As an example: npx knex seed:make 01_seed_users
+2. Run
+npx knex seed:run
