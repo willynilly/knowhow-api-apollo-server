@@ -1,3 +1,9 @@
+How to start Postgre Server
+1. On MacOS, download Postgres.app and pgAdmin
+2. Start Postgre.app and initialize a new postgre Server
+3. Connect to this server using pgAdmin
+4. Create a database called "knowhowapi"
+
 How to Modify the Database Tables with Migrations
 
 1. Run the following (making sure to replace the variable in the migration name):
