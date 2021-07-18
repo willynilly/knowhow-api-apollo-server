@@ -10,14 +10,14 @@ class Service {
     this.CACHE_MINUTE = CACHE_MINUTE;
   }
 
-  findAll() {
+  async findAll() {
     return this.knexDb
       .select("*")
       .from(this.tableName)
       .orderBy("created_date", "asc");
   }
 
-  findById(id) {
+  async findById(id) {
     return this.knexDb
       .select("*")
       .from(this.tableName)
@@ -31,6 +31,42 @@ class Service {
           );
         }
         return entity;
+      });
+  }
+
+  async create(entity) {
+    return this.knexDb(this.tableName)
+      .insert(entity)
+      .returning("*")
+      .then((values) => {
+        return values[0];
+      });
+  }
+
+  async update(entity) {
+    let { id, ...entityWithoutId } = entity;
+    return this.knexDb(this.tableName)
+      .where({ id: id })
+      .update(entityWithoutId)
+      .returning("*")
+      .then((values) => {
+        return values[0];
+      });
+  }
+
+  async delete(id) {
+    return this.knexDb(this.tableName).where({ id: id }).del();
+  }
+
+  async has(id) {
+    return this.knexDb
+      .select("id")
+      .from(this.tableName)
+      .where({ id: id })
+      .first()
+      .cache(this.CACHE_MINUTE)
+      .then((entity) => {
+        return !!entity;
       });
   }
 }

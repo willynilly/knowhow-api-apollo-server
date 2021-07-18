@@ -1,7 +1,7 @@
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./graphql/typedefs");
-const resolvers = require("./graphql/resolvers");
+const resolvers = require("./graphql/resolvers/resolvers");
 const KnowHowAPI = require("./api/knowHowAPI");
 
 const environment = process.env.NODE_ENV || "development";

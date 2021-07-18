@@ -8,12 +8,20 @@ class BadgeService extends Service {
     super(knexDb, TABLE_NAME, ENTITY_NAME);
   }
 
-  findByAuthorUserId(author_user_id) {
+  async findByAuthorUserId(author_user_id) {
     return this.knexDb
       .select("*")
       .from(this.tableName)
       .where({ author_user_id: author_user_id })
       .orderBy("created_date", "asc");
+  }
+
+  async createBadgeByAuthorUserIdAndAchievement(author_user_id, achievement) {
+    let badge = {
+      author_user_id: author_user_id,
+      achievement: achievement,
+    };
+    return this.create(badge);
   }
 }
 

@@ -100,8 +100,10 @@ exports.seed = function (knex) {
   // Deletes ALL existing entries
   return knex("reviews")
     .del()
-    .then(function () {
+    .then(async function () {
       // Inserts seed entries
-      return knex("reviews").insert(reviews);
+      let i_reviews = await knex("reviews").insert(reviews);
+      await knex.raw("select setval('reviews_id_seq', max(id)) from reviews");
+      return i_reviews;
     });
 };

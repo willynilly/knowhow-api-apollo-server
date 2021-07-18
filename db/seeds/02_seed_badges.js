@@ -74,8 +74,10 @@ exports.seed = function (knex) {
   // Deletes ALL existing entries
   return knex("badges")
     .del()
-    .then(function () {
+    .then(async function () {
       // Inserts seed entries
-      return knex("badges").insert(badges);
+      let i_badges = await knex("badges").insert(badges);
+      await knex.raw("select setval('badges_id_seq', max(id)) from badges");
+      return i_badges;
     });
 };

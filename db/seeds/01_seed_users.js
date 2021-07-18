@@ -110,8 +110,11 @@ exports.seed = function (knex) {
   // Deletes ALL existing entries
   return knex("users")
     .del()
-    .then(function () {
+    .then(async function () {
       // Inserts seed entries
-      return knex("users").insert(users);
+      let i_users = await knex("users").insert(users);
+      // update the id sequence
+      await knex.raw("select setval('users_id_seq', max(id)) from users");
+      return i_users;
     });
 };

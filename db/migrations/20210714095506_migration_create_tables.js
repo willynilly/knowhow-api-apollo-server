@@ -20,7 +20,9 @@ exports.up = function (knex) {
         .bigInteger("author_user_id")
         .notNullable()
         .references("id")
-        .inTable("users");
+        .inTable("users")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
       table.text("achievement").notNullable().defaultTo("");
       table.timestamp("created_date").notNullable().defaultTo(knex.fn.now());
       table.timestamp("updated_date").notNullable().defaultTo(knex.fn.now());
@@ -32,17 +34,23 @@ exports.up = function (knex) {
         .bigInteger("badge_id")
         .notNullable()
         .references("id")
-        .inTable("badges");
+        .inTable("badges")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
       table
         .bigInteger("requester_user_id")
         .notNullable()
         .references("id")
-        .inTable("users");
+        .inTable("users")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
       table
         .bigInteger("reviewer_user_id")
         .notNullable()
         .references("id")
-        .inTable("users");
+        .inTable("users")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
       table.boolean("is_approved").notNullable().defaultTo(false);
       table.boolean("is_denied").notNullable().defaultTo(false);
       table.boolean("is_not_reviewed").notNullable().defaultTo(false);

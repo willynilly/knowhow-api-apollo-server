@@ -10,6 +10,7 @@
   },
   "scripts": {
     "run": "node server.js",
+    "setupdb": "npm run migrate && npm run seed",
     "migrate": "npx knex migrate:latest",
     "seed": "npx knex seed:run",
     "test": "echo \"Error: no test specified\" && exit 1"

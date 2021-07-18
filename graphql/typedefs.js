@@ -19,6 +19,29 @@ const typeDefs = gql`
     reviewsByReviewer(reviewer_user_id: String!): [Review]!
   }
 
+  type Mutation {
+    createUserByEmailAddress(email_address: String!): User!
+    createUserByPhoneNumber(phone_number: String!): User!
+    updateUser(update_user_input: UpdateUserInput): User!
+    deleteUser(id: String): Boolean!
+
+    createBadge(create_badge_input: CreateBadgeInput): Badge!
+    deleteBadge(id: String): Boolean!
+
+    inviteReviewByUserId(
+      invite_review_by_user_id_input: InviteReviewByUserIdInput
+    ): Review!
+    inviteReviewByEmailAddress(
+      invite_review_by_email_address_input: InviteReviewByEmailAddressInput
+    ): Review!
+    inviteReviewByPhoneNumber(
+      invite_review_by_phone_number_input: InviteReviewByPhoneNumberInput
+    ): Review!
+    doReview(do_review_input: DoReviewInput): Review!
+    replyReview(reply_review_input: ReplyReviewInput): Review!
+    deleteReview(id: String): Boolean!
+  }
+
   type User {
     id: String
     email_address: String
@@ -31,9 +54,24 @@ const typeDefs = gql`
 
     is_admin: Boolean
     is_verified: Boolean
+    is_active: Boolean
 
     created_date: Date
     updated_date: Date
+  }
+
+  input UpdateUserInput {
+    id: String
+    email_address: String
+    phone_number: String
+    password: String
+
+    first_name: String
+    last_name: String
+    description: String
+
+    is_admin: Boolean
+    is_verified: Boolean
     is_active: Boolean
   }
 
@@ -42,9 +80,15 @@ const typeDefs = gql`
     achievement: String
     author: User
 
+    is_active: Boolean
+
     created_date: Date
     updated_date: Date
-    is_active: Boolean
+  }
+
+  input CreateBadgeInput {
+    author_user_id: String!
+    achievement: String!
   }
 
   type Review {
@@ -74,9 +118,40 @@ const typeDefs = gql`
     requester_comment: String
     requester_comment_date: Date
 
+    is_active: Boolean
+
     created_date: Date
     updated_date: Date
-    is_active: Boolean
+  }
+
+  input InviteReviewByUserIdInput {
+    badge_id: String!
+    requester_user_id: String!
+    reviewer_user_id: String!
+  }
+
+  input InviteReviewByEmailAddressInput {
+    badge_id: String!
+    requester_user_id: String!
+    reviewer_email_address: String!
+  }
+
+  input InviteReviewByPhoneNumberInput {
+    badge_id: String!
+    requester_user_id: String!
+    reviewer_phone_number: String!
+  }
+
+  input DoReviewInput {
+    review_id: String!
+    is_approved: Boolean!
+    is_denied: Boolean!
+    reviewer_comment: String
+  }
+
+  input ReplyReviewInput {
+    review_id: String!
+    requester_comment: String!
   }
 `;
 
