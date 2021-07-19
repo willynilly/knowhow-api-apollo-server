@@ -20,6 +20,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    loginByEmailAddress(email_address: String!, password: String!): JWT!
+    loginByPhoneNumber(phone_number: String!, password: String!): JWT!
     createUserByEmailAddress(email_address: String!): User!
     createUserByPhoneNumber(phone_number: String!): User!
     updateUser(update_user_input: UpdateUserInput): User!
@@ -58,6 +60,10 @@ const typeDefs = gql`
 
     created_date: Date
     updated_date: Date
+  }
+
+  type JWT {
+    jwt: String!
   }
 
   input UpdateUserInput {

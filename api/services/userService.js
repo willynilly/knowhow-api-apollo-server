@@ -1,4 +1,5 @@
 const Service = require("./service");
+const jwt = require("jsonwebtoken");
 
 const TABLE_NAME = "users";
 const ENTITY_NAME = "user";
@@ -6,6 +7,41 @@ const ENTITY_NAME = "user";
 class UserService extends Service {
   constructor(knexDb) {
     super(knexDb, TABLE_NAME, ENTITY_NAME);
+  }
+
+  async loginByEmailAddress(emailAddress, password) {
+    const user = await this.findFirstBy({
+      email_address: emailAddress,
+      password: password,
+    });
+    return { jwt: this.createJWTForUser(user) };
+  }
+
+  async loginByPhoneNumber(phoneNumber, password) {
+    const user = await this.findFirstBy({
+      phone_number: phoneNumber,
+      password: password,
+    });
+    return { jwt: this.createJWTForUser(user) };
+  }
+
+  async createJWTForUser(user) {
+    let url =
+      process.env.API_PROTOCOL +
+      process.env.API_HOST +
+      ":" +
+      process.env.API_PORT +
+      process.env.API_GRAPHQL_PATH;
+    let roles = ["signed_in"];
+    if (user.is_admin) {
+      roles.push("admin");
+    }
+    let payload = { url, roles };
+    return jwt.sign(payload, process.env.API_JWT_SECRET, {
+      algorithm: process.env.API_JWT_ALGORITHM,
+      subject: user.id,
+      expiresIn: process.env.API_JWT_EXPIRES_IN,
+    });
   }
 
   async createByEmailAddress(emailAddress) {

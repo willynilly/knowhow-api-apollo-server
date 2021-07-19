@@ -17,11 +17,11 @@ class Service {
       .orderBy("created_date", "asc");
   }
 
-  async findById(id) {
+  async findFirstBy(where) {
     return this.knexDb
       .select("*")
       .from(this.tableName)
-      .where({ id: id })
+      .where(where)
       .first()
       .cache(this.CACHE_MINUTE)
       .then((entity) => {
@@ -32,6 +32,10 @@ class Service {
         }
         return entity;
       });
+  }
+
+  async findById(id) {
+    return this.findFirstBy({ id: id });
   }
 
   async create(entity) {

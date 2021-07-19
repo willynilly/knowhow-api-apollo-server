@@ -1,4 +1,14 @@
 const mutationResolvers = {
+  loginByEmailAddress: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.loginByEmailAddress(args.email_address, args.password);
+  },
+
+  loginByPhoneNumber: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.loginByPhoneNumber(args.phone_number, args.password);
+  },
+
   createUserByEmailAddress: async (parent, args, context, info) => {
     let userService = context.dataSources.knowHowAPI.userService;
     return userService.createByEmailAddress(args.email_address);
