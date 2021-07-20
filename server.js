@@ -2,20 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const expressJwt = require("express-jwt");
 const { ApolloServer } = require("apollo-server-express");
-const typeDefs = require("./graphql/typedefs");
-const resolvers = require("./graphql/resolvers/resolvers");
-const KnowHowAPI = require("./api/knowHowAPI");
 
-const environment = process.env.NODE_ENV || "development";
-const knexDbConfig = require("./knexfile")[environment];
-const knowHowAPI = new KnowHowAPI(knexDbConfig);
+const schema = require("./graphql/schema");
+const dataSources = require("./graphql/dataSources");
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  dataSources: () => {
-    return { knowHowAPI: knowHowAPI };
-  },
+  schema: schema,
+  dataSources: dataSources,
   context: (context) => {
     // get the user object decoded by express-jwt and placed on the request object
     const user = context.req.user || null;
@@ -28,6 +21,8 @@ const server = new ApolloServer({
 });
 
 const app = express();
+
+// check the incoming token, decode it, and add the user info to the context
 app.use(
   expressJwt({
     secret: process.env.API_JWT_SECRET,
@@ -36,14 +31,19 @@ app.use(
   })
 );
 
-server.applyMiddleware({ app });
+// start the server
+(async () => {
+  await server.start();
 
-app.listen({ host: process.env.API_HOST, port: process.env.API_PORT }, () =>
-  console.log(
-    "Now browse to http://" +
-      process.env.API_HOST +
-      ":" +
-      process.env.API_PORT +
-      server.graphqlPath
-  )
-);
+  server.applyMiddleware({ app });
+
+  app.listen({ host: process.env.API_HOST, port: process.env.API_PORT }, () =>
+    console.log(
+      "Now browse to http://" +
+        process.env.API_HOST +
+        ":" +
+        process.env.API_PORT +
+        server.graphqlPath
+    )
+  );
+})();

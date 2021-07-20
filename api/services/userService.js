@@ -32,7 +32,7 @@ class UserService extends Service {
       ":" +
       process.env.API_PORT +
       process.env.API_GRAPHQL_PATH;
-    let roles = ["signed_in"];
+    let roles = ["authenticated"];
     if (user.is_admin) {
       roles.push("admin");
     }

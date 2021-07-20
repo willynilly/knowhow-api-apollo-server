@@ -1,9 +1,9 @@
 const users = [
   {
     id: "1",
-    email_address: "some_email_address_2",
-    phone_number: "some_phone_number_2",
-    password: "some_password_2",
+    email_address: "email_address_1",
+    phone_number: "phone_number_1",
+    password: "password_1",
     first_name: "Finn",
     last_name: "Weber",
     description:
@@ -15,9 +15,9 @@ const users = [
 
   {
     id: "2",
-    email_address: "some_email_address_1",
-    phone_number: "some_phone_number_1",
-    password: "some_password_1",
+    email_address: "email_address_2",
+    phone_number: "phone_number_2",
+    password: "password_2",
     first_name: "Aahad",
     last_name: "El Din",
     description: "I am an experienced baker.",
@@ -28,9 +28,9 @@ const users = [
 
   {
     id: "3",
-    email_address: "some_email_address_3",
-    phone_number: "some_phone_number_3",
-    password: "some_password_3",
+    email_address: "email_address_3",
+    phone_number: "phone_number_3",
+    password: "password_3",
     first_name: "Fatima",
     last_name: "Saleh",
     description: "I am a mother who is training to become a social worker.",
@@ -41,9 +41,9 @@ const users = [
 
   {
     id: "4",
-    email_address: "some_email_address_3",
-    phone_number: "some_phone_number_3",
-    password: "some_password_3",
+    email_address: "email_address_4",
+    phone_number: "phone_number_4",
+    password: "password_4",
     first_name: "Elke",
     last_name: "Schmidt",
     description: "I am a social worker who enjoys mentoring.",
@@ -54,9 +54,9 @@ const users = [
 
   {
     id: "5",
-    email_address: "some_email_address_3",
-    phone_number: "some_phone_number_3",
-    password: "some_password_3",
+    email_address: "email_address_5",
+    phone_number: "phone_number_5",
+    password: "password_5",
     first_name: "Lila",
     last_name: "Al Zubi",
     description: "I am a student learning how to fix cars and trucks.",
@@ -67,9 +67,9 @@ const users = [
 
   {
     id: "6",
-    email_address: "some_email_address_3",
-    phone_number: "some_phone_number_3",
-    password: "some_password_3",
+    email_address: "email_address_6",
+    phone_number: "phone_number_6",
+    password: "password_6",
     first_name: "Omar",
     last_name: "Awad",
     description:
@@ -81,9 +81,9 @@ const users = [
 
   {
     id: "7",
-    email_address: "some_email_address_3",
-    phone_number: "some_phone_number_3",
-    password: "some_password_3",
+    email_address: "email_address_7",
+    phone_number: "phone_number_7",
+    password: "password_7",
     first_name: "Yosef",
     last_name: "Saleh",
     description: "I am a cook who is learning how to cook vegan meals.",
@@ -94,9 +94,9 @@ const users = [
 
   {
     id: "8",
-    email_address: "some_email_address_8",
-    phone_number: "some_phone_number_8",
-    password: "some_password_3",
+    email_address: "email_address_8",
+    phone_number: "phone_number_8",
+    password: "password_8",
     first_name: "Jana",
     last_name: "Khatib",
     description: "I am a chef who loves to make different vegan meals.",
