@@ -5,7 +5,7 @@ const { applyMiddleware } = require("graphql-middleware");
 const permissions = require("./permissions");
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }), // build original schema
-  permissions // add permissions to it using graphml-shield
+  permissions // add permissions to it using graphql-shield
 );
 
 module.exports = schema;
