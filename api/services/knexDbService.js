@@ -1,8 +1,6 @@
-const EntityNotFoundError = require("../../graphql/errors/entityNotFoundError");
-
 const CACHE_MINUTE = 60;
 
-class Service {
+class KnexDbService {
   constructor(knexDb, tableName, entityName) {
     this.knexDb = knexDb;
     this.tableName = tableName;
@@ -23,15 +21,7 @@ class Service {
       .from(this.tableName)
       .where(where)
       .first()
-      .cache(this.CACHE_MINUTE)
-      .then((entity) => {
-        if (!entity) {
-          throw new EntityNotFoundError(
-            "The " + this.entityName + " could not be found."
-          );
-        }
-        return entity;
-      });
+      .cache(this.CACHE_MINUTE);
   }
 
   async findById(id) {
@@ -48,7 +38,8 @@ class Service {
   }
 
   async update(entity) {
-    let { id, ...entityWithoutId } = entity;
+    const { id, ...entityWithoutId } = entity;
+    entity.updated_date = this.knexDb.fn.now();
     return this.knexDb(this.tableName)
       .where({ id: id })
       .update(entityWithoutId)
@@ -63,10 +54,14 @@ class Service {
   }
 
   async has(id) {
+    return this.hasWhere({ id: id });
+  }
+
+  async hasWhere(where) {
     return this.knexDb
       .select("id")
       .from(this.tableName)
-      .where({ id: id })
+      .where(where)
       .first()
       .cache(this.CACHE_MINUTE)
       .then((entity) => {
@@ -75,4 +70,4 @@ class Service {
   }
 }
 
-module.exports = Service;
+module.exports = KnexDbService;

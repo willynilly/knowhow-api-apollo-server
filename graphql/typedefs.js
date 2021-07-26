@@ -20,10 +20,31 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    loginByEmailAddress(email_address: String!, password: String!): JWT!
-    loginByPhoneNumber(phone_number: String!, password: String!): JWT!
-    createUserByEmailAddress(email_address: String!): User!
-    createUserByPhoneNumber(phone_number: String!): User!
+    registerUserByEmailAddressAndPassword(
+      email_address: String!
+      password: String!
+    ): JWT!
+    registerUserByPhoneNumberAndPassword(
+      phone_number: String!
+      password: String!
+    ): JWT!
+
+    verifyEmailAddress(jwt: String!): JWT!
+    verifyPhoneNumber(jwt: String!): JWT!
+
+    loginByEmailAddressAndPassword(
+      email_address: String!
+      password: String!
+    ): JWT!
+    loginByPhoneNumberAndPassword(
+      phone_number: String!
+      password: String!
+    ): JWT!
+
+    resetPasswordByEmailAddress(email_address: String!): JWT!
+    resetPasswordByPhoneNumber(phone_number: String!): JWT!
+    updatePassword(update_password_input: UpdatePasswordInput): Boolean!
+
     updateUser(update_user_input: UpdateUserInput): User!
     deleteUser(id: String): Boolean!
 
@@ -48,14 +69,14 @@ const typeDefs = gql`
     id: String
     email_address: String
     phone_number: String
-    password: String
 
     first_name: String
     last_name: String
     description: String
 
     is_admin: Boolean
-    is_verified: Boolean
+    is_verified_by_email_address: Boolean
+    is_verified_by_phone_number: Boolean
     is_active: Boolean
 
     created_date: Date
@@ -68,17 +89,14 @@ const typeDefs = gql`
 
   input UpdateUserInput {
     id: String
-    email_address: String
-    phone_number: String
-    password: String
-
     first_name: String
     last_name: String
     description: String
+  }
 
-    is_admin: Boolean
-    is_verified: Boolean
-    is_active: Boolean
+  input UpdatePasswordInput {
+    user_id: String
+    password: String
   }
 
   type Badge {
@@ -133,18 +151,21 @@ const typeDefs = gql`
   input InviteReviewByUserIdInput {
     badge_id: String!
     requester_user_id: String!
+    requester_invite: String!
     reviewer_user_id: String!
   }
 
   input InviteReviewByEmailAddressInput {
     badge_id: String!
     requester_user_id: String!
+    requester_invite: String!
     reviewer_email_address: String!
   }
 
   input InviteReviewByPhoneNumberInput {
     badge_id: String!
     requester_user_id: String!
+    requester_invite: String!
     reviewer_phone_number: String!
   }
 

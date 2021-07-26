@@ -1,22 +1,67 @@
 const mutationResolvers = {
-  loginByEmailAddress: async (parent, args, context, info) => {
+  registerUserByEmailAddressAndPassword: async (
+    parent,
+    args,
+    context,
+    info
+  ) => {
     let userService = context.dataSources.knowHowAPI.userService;
-    return userService.loginByEmailAddress(args.email_address, args.password);
+    return userService.registerByEmailAddressAndPassword(
+      args.email_address,
+      args.password
+    );
   },
 
-  loginByPhoneNumber: async (parent, args, context, info) => {
+  registerUserByPhoneNumberAndPassword: async (parent, args, context, info) => {
     let userService = context.dataSources.knowHowAPI.userService;
-    return userService.loginByPhoneNumber(args.phone_number, args.password);
+    return userService.registerByPhoneNumberAndPassword(
+      args.phone_number,
+      args.password
+    );
   },
 
-  createUserByEmailAddress: async (parent, args, context, info) => {
+  verifyEmailAddress: async (parent, args, context, info) => {
     let userService = context.dataSources.knowHowAPI.userService;
-    return userService.createByEmailAddress(args.email_address);
+    return userService.verifyEmailAddress(context.userId);
   },
 
-  createUserByPhoneNumber: async (parent, args, context, info) => {
+  verifyPhoneNumber: async (parent, args, context, info) => {
     let userService = context.dataSources.knowHowAPI.userService;
-    return userService.createByPhoneNumber(args.phone_number);
+    return userService.verifyPhoneNumber(context.userId);
+  },
+
+  loginByEmailAddressAndPassword: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.loginByEmailAddressAndPassword(
+      args.email_address,
+      args.password
+    );
+  },
+
+  loginByPhoneNumberAndPassword: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.loginByPhoneNumberAndPassword(
+      args.phone_number,
+      args.password
+    );
+  },
+
+  resetPasswordByEmailAddress: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.resetPasswordByEmailAddress(args.email_address);
+  },
+
+  resetPasswordByPhoneNumber: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.resetPasswordByPhoneNumber(args.phone_number);
+  },
+
+  updatePassword: async (parent, args, context, info) => {
+    let userService = context.dataSources.knowHowAPI.userService;
+    return userService.updatePassword(
+      args.update_password_input.user_id,
+      args.update_password_input.password
+    );
   },
 
   updateUser: async (parent, args, context, info) => {
@@ -47,6 +92,7 @@ const mutationResolvers = {
     return reviewService.inviteReviewByUserId(
       args.invite_review_by_user_id_input.badge_id,
       args.invite_review_by_user_id_input.requester_user_id,
+      args.invite_review_by_user_id_input.requester_invite,
       args.invite_review_by_user_id_input.reviewer_user_id
     );
   },
@@ -54,18 +100,20 @@ const mutationResolvers = {
   inviteReviewByEmailAddress: async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
     return reviewService.inviteReviewByEmailAddress(
-      args.invite_review_by_user_id_input.badge_id,
-      args.invite_review_by_user_id_input.requester_user_id,
-      args.invite_review_by_user_id_input.reviewer_email_address
+      args.invite_review_by_email_address_input.badge_id,
+      args.invite_review_by_email_address_input.requester_user_id,
+      args.invite_review_by_email_address_input.requester_invite,
+      args.invite_review_by_email_address_input.reviewer_email_address
     );
   },
 
   inviteReviewByPhoneNumber: async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
     return reviewService.inviteReviewByPhoneNumber(
-      args.invite_review_by_user_id_input.badge_id,
-      args.invite_review_by_user_id_input.requester_user_id,
-      args.invite_review_by_user_id_input.reviewer_phone_number
+      args.invite_review_by_phone_number_input.badge_id,
+      args.invite_review_by_phone_number_input.requester_user_id,
+      args.invite_review_by_phone_number_input.requester_invite,
+      args.invite_review_by_phone_number_input.reviewer_phone_number
     );
   },
 

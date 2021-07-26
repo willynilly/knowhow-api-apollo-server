@@ -36,8 +36,8 @@ module.exports = {
       port: DEV_PG_PORT,
     },
     pool: {
-      min: DEV_PG_POOL_MIN,
-      max: DEV_PG_POOL_MAX,
+      min: parseInt(DEV_PG_POOL_MIN),
+      max: parseInt(DEV_PG_POOL_MAX),
     },
     migrations: {
       directory: __dirname + "/db/migrations",
@@ -57,8 +57,8 @@ module.exports = {
       port: STAGING_PG_PORT,
     },
     pool: {
-      min: STAGING_PG_POOL_MIN,
-      max: STAGING_PG_POOL_MAX,
+      min: parseInt(STAGING_PG_POOL_MIN),
+      max: parseInt(STAGING_PG_POOL_MAX),
     },
     migrations: {
       tableName: "knex_migrations",
@@ -75,8 +75,8 @@ module.exports = {
       port: PROD_PG_PORT,
     },
     pool: {
-      min: PROD_PG_POOL_MIN,
-      max: PROD_PG_POOL_MAX,
+      min: parseInt(PROD_PG_POOL_MIN),
+      max: parseInt(PROD_PG_POOL_MAX),
     },
     migrations: {
       tableName: "knex_migrations",

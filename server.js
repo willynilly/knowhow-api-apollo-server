@@ -11,9 +11,15 @@ const server = new ApolloServer({
   dataSources: dataSources,
   context: (context) => {
     // get the user object decoded by express-jwt and placed on the request object
-    const user = context.req.user || null;
-    // add the user back to the context object
-    context.user = user;
+    const userByJwt = context.req.user || null;
+    // add the user id and user roles back to the context object
+    if (userByJwt === null) {
+      context.userId = null;
+      context.userRoles = [];
+    } else {
+      context.userId = userByJwt.id;
+      context.userRoles = userByJwt.roles;
+    }
     return context;
   },
   debug: false,

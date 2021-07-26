@@ -9,7 +9,14 @@ exports.up = function (knex) {
       table.text("last_name").notNullable().defaultTo("");
       table.text("description").notNullable().defaultTo("");
       table.boolean("is_admin").notNullable().defaultTo(false);
-      table.boolean("is_verified").notNullable().defaultTo(false);
+      table
+        .boolean("is_verified_by_email_address")
+        .notNullable()
+        .defaultTo(false);
+      table
+        .boolean("is_verified_by_phone_number")
+        .notNullable()
+        .defaultTo(false);
       table.timestamp("created_date").notNullable().defaultTo(knex.fn.now());
       table.timestamp("updated_date").notNullable().defaultTo(knex.fn.now());
       table.boolean("is_active").notNullable().defaultTo(true);
@@ -78,7 +85,7 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTable("users")
-    .dropTable("badges")
-    .dropTable("reviews");
+    .dropTableIfExists("users")
+    .dropTableIfExists("badges")
+    .dropTableIfExists("reviews");
 };

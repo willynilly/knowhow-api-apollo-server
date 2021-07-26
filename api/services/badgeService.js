@@ -1,24 +1,30 @@
-const Service = require("./service");
+const KnexDbService = require("./knexDbService");
+const UserService = require("./userService");
 
 const TABLE_NAME = "badges";
 const ENTITY_NAME = "badge";
 
-class BadgeService extends Service {
+class BadgeService extends KnexDbService {
   constructor(knexDb) {
     super(knexDb, TABLE_NAME, ENTITY_NAME);
+    this.userService = new UserService(knexDb);
   }
 
-  async findByAuthorUserId(author_user_id) {
+  async findByAuthorUserId(authorUserId) {
     return this.knexDb
       .select("*")
       .from(this.tableName)
-      .where({ author_user_id: author_user_id })
+      .where({ author_user_id: authorUserId })
       .orderBy("created_date", "asc");
   }
 
-  async createBadgeByAuthorUserIdAndAchievement(author_user_id, achievement) {
+  async createBadgeByAuthorUserIdAndAchievement(authorUserId, achievement) {
+    const hasUser = await this.userService.has(authorUserId);
+    if (!hasUser) {
+      throw Error("Invalid Author User.");
+    }
     let badge = {
-      author_user_id: author_user_id,
+      author_user_id: authorUserId,
       achievement: achievement,
     };
     return this.create(badge);

@@ -1,4 +1,6 @@
-const users = [
+const bcrypt = require("bcrypt");
+
+let users = [
   {
     id: "1",
     email_address: "email_address_1",
@@ -9,7 +11,8 @@ const users = [
     description:
       "I recently found a job at a bakery and am learning how to bake bread.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -22,7 +25,8 @@ const users = [
     last_name: "El Din",
     description: "I am an experienced baker.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -35,7 +39,8 @@ const users = [
     last_name: "Saleh",
     description: "I am a mother who is training to become a social worker.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -48,7 +53,8 @@ const users = [
     last_name: "Schmidt",
     description: "I am a social worker who enjoys mentoring.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -61,7 +67,8 @@ const users = [
     last_name: "Al Zubi",
     description: "I am a student learning how to fix cars and trucks.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -75,7 +82,8 @@ const users = [
     description:
       "I am a automechanic who loves to teach people about automobiles.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -88,7 +96,8 @@ const users = [
     last_name: "Saleh",
     description: "I am a cook who is learning how to cook vegan meals.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 
@@ -101,10 +110,18 @@ const users = [
     last_name: "Khatib",
     description: "I am a chef who loves to make different vegan meals.",
     is_admin: false,
-    is_verified: true,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
     is_active: true,
   },
 ];
+
+// hash the user passwords with salt
+const saltRounds = 10;
+users = users.map((user) => {
+  user.password = bcrypt.hashSync(user.password, saltRounds);
+  return user;
+});
 
 exports.seed = function (knex) {
   // Deletes ALL existing entries
@@ -112,7 +129,7 @@ exports.seed = function (knex) {
     .del()
     .then(async function () {
       // Inserts seed entries
-      let i_users = await knex("users").insert(users);
+      const i_users = await knex("users").insert(users);
       // update the id sequence
       await knex.raw("select setval('users_id_seq', max(id)) from users");
       return i_users;
