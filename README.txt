@@ -38,7 +38,12 @@ How to run all the tests
 1. Run: npm run test
 2. This will run the Jest tests.
 
-How to Run a Unit Test For A Specifc test file
+How to Run Tests for all test files once 
+1. Click on the Run and Debug button in Visual Studio Code
+3. Select "Jest single run all tests" from the Launch program dropdown menu
+4. Press the green play button at the top next to "Jest single run all tests" 
+
+How to Run a Test For A Specifc test file
 1. Open a file ending in *.test.js in Visual Studio Code
 2. Click on the Run and Debug button in Visual Studio Code
 3. Select "Jest watch current file"from the Launch program dropdown menu

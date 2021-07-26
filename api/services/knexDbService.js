@@ -1,5 +1,8 @@
 const CACHE_MINUTE = 60;
 
+// assumes that the table has an 'id' column
+// assumes that the db is postgreSQL db
+
 class KnexDbService {
   constructor(knexDb, tableName, entityName) {
     this.knexDb = knexDb;
@@ -29,8 +32,9 @@ class KnexDbService {
   }
 
   async create(entity) {
+    const { id, ...entityWithoutId } = entity;
     return this.knexDb(this.tableName)
-      .insert(entity)
+      .insert(entityWithoutId)
       .returning("*")
       .then((values) => {
         return values[0];
@@ -63,7 +67,6 @@ class KnexDbService {
       .from(this.tableName)
       .where(where)
       .first()
-      .cache(this.CACHE_MINUTE)
       .then((entity) => {
         return !!entity;
       });

@@ -5,6 +5,17 @@ const BadgeService = require("./badgeService");
 const TABLE_NAME = "reviews";
 const ENTITY_NAME = "review";
 
+const CANNOT_CREATE_REVIEW_INVALID_BADGE_ID =
+  "Cannot create review because the badge id is invalid.";
+const CANNOT_CREATE_REVIEW_INVALID_REQUESTER_USER_ID =
+  "Cannot create review because the requester user id is invalid.";
+const CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID =
+  "Cannot create review because the reviewer user id is invalid.";
+const CANNOT_DO_REVIEW_INVALID_REVIEW_ID =
+  "Cannot do review because the review id is invalid.";
+const CANNOT_REPLY_REVIEW_INVALID_REVIEW_ID =
+  "Cannot reply to review because the review id is invalid.";
+
 class ReviewService extends KnexDbService {
   constructor(knexDb) {
     super(knexDb, TABLE_NAME, ENTITY_NAME);
@@ -36,15 +47,15 @@ class ReviewService extends KnexDbService {
   ) {
     const hasBadge = await this.badgeService.has(badgeId);
     if (!hasBadge) {
-      throw Error("Invalid Badge.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_BADGE_ID);
     }
     const hasRequesterUser = await this.userService.has(requesterUserId);
     if (!hasRequesterUser) {
-      throw Error("Invalid Requester User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REQUESTER_USER_ID);
     }
     const hasReviewerUser = await this.userService.has(reviewerUserId);
     if (!hasReviewerUser) {
-      throw Error("Invalid Reviewer User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
     }
     if (!requesterInvite) {
       requesterInvite = "";
@@ -70,17 +81,17 @@ class ReviewService extends KnexDbService {
   ) {
     const hasBadge = await this.badgeService.has(badgeId);
     if (!hasBadge) {
-      throw Error("Invalid Badge.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_BADGE_ID);
     }
     const hasRequesterUser = await this.userService.has(requesterUserId);
     if (!hasRequesterUser) {
-      throw Error("Invalid Requester User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REQUESTER_USER_ID);
     }
     const reviewerUser = await this.userService.findFirstBy({
       email_address: reviewerEmailAddress,
     });
     if (!reviewerUser) {
-      throw Error("Invalid Reviewer User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
     }
     if (!requesterInvite) {
       requesterInvite = "";
@@ -106,17 +117,17 @@ class ReviewService extends KnexDbService {
   ) {
     const hasBadge = await this.badgeService.has(badgeId);
     if (!hasBadge) {
-      throw Error("Invalid Badge.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_BADGE_ID);
     }
     const hasRequesterUser = await this.userService.has(requesterUserId);
     if (!hasRequesterUser) {
-      throw Error("Invalid Requester User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REQUESTER_USER_ID);
     }
     const reviewerUser = await this.userService.findFirstBy({
       phone_number: reviewerPhoneNumber,
     });
     if (!reviewerUser) {
-      throw Error("Invalid Reviewer User.");
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
     }
     if (!requesterInvite) {
       requesterInvite = "";
@@ -137,7 +148,7 @@ class ReviewService extends KnexDbService {
   async doReview(reviewId, isApproved, isDenied, reviewerComment) {
     const review = this.findById(reviewId);
     if (!review) {
-      throw Error("Invalid review.");
+      throw Error(CANNOT_DO_REVIEW_INVALID_REVIEW_ID);
     }
     review.is_approved = isApproved;
     review.is_denied = isDenied;
@@ -149,7 +160,7 @@ class ReviewService extends KnexDbService {
   async replyReview(reviewId, requesterComment) {
     const review = this.findById(reviewId);
     if (!review) {
-      throw Error("Invalid review.");
+      throw Error(CANNOT_REPLY_REVIEW_INVALID_REVIEW_ID);
     }
     review.requester_comment = requesterComment;
     review.requester_comment_date = this.knexDb.fn.now();

@@ -21,7 +21,7 @@ class BadgeService extends KnexDbService {
   async createBadgeByAuthorUserIdAndAchievement(authorUserId, achievement) {
     const hasUser = await this.userService.has(authorUserId);
     if (!hasUser) {
-      throw Error("Invalid Author User.");
+      throw Error("Cannot create badge bacause of invalid author id.");
     }
     let badge = {
       author_user_id: authorUserId,

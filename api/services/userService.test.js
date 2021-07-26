@@ -23,7 +23,7 @@ afterAll(async () => {
 });
 
 describe("UserService", () => {
-  describe("_createByEmailAddressAndPhoneNumberAndPassword(emailAddress, phoneNumber, password", () => {
+  describe("_createByEmailAddressAndPhoneNumberAndPassword(emailAddress, phoneNumber, password)", () => {
     beforeEach(async () => {
       emailAddress = "someEmailAddress";
       phoneNumber = "somePhoneNumber";
