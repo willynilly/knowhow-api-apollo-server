@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 let users = [
   {
     id: "1",
-    email_address: "email_address_1",
-    phone_number: "phone_number_1",
+    email_address: "email_address_1@quietsimple.com",
+    phone_number: "+14041111111",
     password: "password_1",
     first_name: "Finn",
     last_name: "Weber",
@@ -18,8 +18,8 @@ let users = [
 
   {
     id: "2",
-    email_address: "email_address_2",
-    phone_number: "phone_number_2",
+    email_address: "email_address_2@quietsimple.com",
+    phone_number: "+14041111112",
     password: "password_2",
     first_name: "Aahad",
     last_name: "El Din",
@@ -32,8 +32,8 @@ let users = [
 
   {
     id: "3",
-    email_address: "email_address_3",
-    phone_number: "phone_number_3",
+    email_address: "email_address_3@quietsimple.com",
+    phone_number: "+14041111113",
     password: "password_3",
     first_name: "Fatima",
     last_name: "Saleh",
@@ -46,8 +46,8 @@ let users = [
 
   {
     id: "4",
-    email_address: "email_address_4",
-    phone_number: "phone_number_4",
+    email_address: "email_address_4@quietsimple.com",
+    phone_number: "+14041111114",
     password: "password_4",
     first_name: "Elke",
     last_name: "Schmidt",
@@ -60,8 +60,8 @@ let users = [
 
   {
     id: "5",
-    email_address: "email_address_5",
-    phone_number: "phone_number_5",
+    email_address: "email_address_5@quietsimple.com",
+    phone_number: "+14041111115",
     password: "password_5",
     first_name: "Lila",
     last_name: "Al Zubi",
@@ -74,8 +74,8 @@ let users = [
 
   {
     id: "6",
-    email_address: "email_address_6",
-    phone_number: "phone_number_6",
+    email_address: "email_address_6@quietsimple.com",
+    phone_number: "+14041111116",
     password: "password_6",
     first_name: "Omar",
     last_name: "Awad",
@@ -89,8 +89,8 @@ let users = [
 
   {
     id: "7",
-    email_address: "email_address_7",
-    phone_number: "phone_number_7",
+    email_address: "email_address_7@quietsimple.com",
+    phone_number: "+14041111117",
     password: "password_7",
     first_name: "Yosef",
     last_name: "Saleh",
@@ -103,13 +103,27 @@ let users = [
 
   {
     id: "8",
-    email_address: "email_address_8",
-    phone_number: "phone_number_8",
+    email_address: "email_address_8@quietsimple.com",
+    phone_number: "+14041111118",
     password: "password_8",
     first_name: "Jana",
     last_name: "Khatib",
     description: "I am a chef who loves to make different vegan meals.",
     is_admin: false,
+    is_verified_by_email_address: true,
+    is_verified_by_phone_number: true,
+    is_active: true,
+  },
+
+  {
+    id: "9",
+    email_address: "email_address_9@quietsimple.com",
+    phone_number: "+14041111119",
+    password: "password_9",
+    first_name: "Jan",
+    last_name: "Powers",
+    description: "I am an admin.",
+    is_admin: true,
     is_verified_by_email_address: true,
     is_verified_by_phone_number: true,
     is_active: true,

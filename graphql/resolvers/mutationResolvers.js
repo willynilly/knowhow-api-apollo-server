@@ -66,7 +66,8 @@ const mutationResolvers = {
 
   updateUser: async (parent, args, context, info) => {
     let userService = context.dataSources.knowHowAPI.userService;
-    return userService.update(args.update_user_input);
+    await userService.update(args.update_user_input);
+    return true;
   },
 
   deleteUser: async (parent, args, context, info) => {
@@ -120,16 +121,18 @@ const mutationResolvers = {
   doReview: async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
     return reviewService.doReview(
-      args.review_id,
-      args.is_approved,
-      args.is_denied,
-      args.reviewerComment
+      args.do_review_input.review_id,
+      args.do_review_input.is_approved,
+      args.do_review_input.reviewer_comment
     );
   },
 
   replyReview: async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
-    return reviewService.replyReview(args.review_id, args.requester_comment);
+    return reviewService.replyReview(
+      args.reply_review_input.review_id,
+      args.reply_review_input.requester_comment
+    );
   },
 
   deleteReview: async (parent, args, context, info) => {

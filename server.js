@@ -1,10 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const expressJwt = require("express-jwt");
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer, ApolloError } = require("apollo-server-express");
 
 const schema = require("./graphql/schema");
 const dataSources = require("./graphql/dataSources");
+const { response } = require("express");
 
 const server = new ApolloServer({
   schema: schema,
@@ -17,7 +18,7 @@ const server = new ApolloServer({
       context.userId = null;
       context.userRoles = [];
     } else {
-      context.userId = userByJwt.id;
+      context.userId = userByJwt.sub;
       context.userRoles = userByJwt.roles;
     }
     return context;
@@ -36,6 +37,25 @@ app.use(
     credentialsRequired: false,
   })
 );
+
+// catch all internal errors so that the stacktrace is not returned
+// in the in response.
+// log the error to the console
+// for example, this prevents express-jwt from spitting back a stacktrace
+// error when a malformed jwt is sent in the body of a request
+app.use(function (err, req, res, next) {
+  if (err) {
+    console.log(err);
+    const errors = [
+      {
+        message: "Not Authorised!",
+      },
+    ];
+    return res.status(401).send({ errors, data: null });
+  } else {
+    next();
+  }
+});
 
 // start the server
 (async () => {

@@ -15,7 +15,8 @@ class KnexDbService {
     return this.knexDb
       .select("*")
       .from(this.tableName)
-      .orderBy("created_date", "asc");
+      .orderBy("created_date", "asc")
+      .orderBy("id", "asc");
   }
 
   async findFirstBy(where) {

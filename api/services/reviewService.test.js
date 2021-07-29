@@ -30,17 +30,17 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-  return testDb.destroy();
+  return await testDb.destroy();
 });
 
 describe("ReviewService", () => {
   describe("inviteReviewByUserId(badgeId, requesterUserId, requesterInvite, reviewerUserId)", () => {
     beforeEach(async () => {
       requesterUser = await userService._createByEmailAddress(
-        "requester_email_address"
+        "requester_email_address@quietsimple.com"
       );
       reviewerUser = await userService._createByEmailAddress(
-        "reviewer_email_address"
+        "reviewer_email_address@quietsimple.com"
       );
       const achievement = "some achievement";
       requesterInvite = "some invite message";
@@ -51,7 +51,7 @@ describe("ReviewService", () => {
     });
 
     describe("when user does NOT exist for requester user id", () => {
-      test("should return error about invalid requester user id", () => {
+      test("should return error about invalid requester user id", async () => {
         const badRequesterUserId = requesterUser.id + "" + reviewerUser.id;
         return expect(
           reviewService.inviteReviewByUserId(
@@ -67,7 +67,7 @@ describe("ReviewService", () => {
     });
 
     describe("when ids are valid for badge, requester user, and reviewer user", () => {
-      test("should return object with badge id, requester user id, reviewer user id, and requester invite", () => {
+      test("should return object with badge id, requester user id, reviewer user id, and requester invite", async () => {
         return expect(
           reviewService.inviteReviewByUserId(
             badge.id,
@@ -83,7 +83,7 @@ describe("ReviewService", () => {
         });
       });
 
-      test("should return object with id as a string", () => {
+      test("should return object with id as a string", async () => {
         return expect(
           reviewService.inviteReviewByUserId(
             badge.id,

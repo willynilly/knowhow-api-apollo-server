@@ -1,4 +1,4 @@
-const reviews = [
+let reviews = [
   {
     id: "1",
     badge_id: "1",
@@ -30,7 +30,6 @@ const reviews = [
     requester_user_id: "1",
     reviewer_user_id: "2",
     is_approved: false,
-    is_denied: true,
     reviewer_comment:
       "Unfortunately, you used too many raisins. Try it again and then I will review it again.",
   },
@@ -88,7 +87,6 @@ const reviews = [
     requester_user_id: "1",
     reviewer_user_id: "2",
     is_approved: true,
-    is_denied: false,
     requester_invite: "Mr. El Din, can you review my raisin bread again?",
     reviewer_comment:
       "Looks good. You used the correct amount of raisins this time.",
@@ -101,6 +99,12 @@ exports.seed = function (knex) {
   return knex("reviews")
     .del()
     .then(async function () {
+      // set the is_reviewed dates
+      reviews = reviews.map((review) => {
+        review.reviewed_date = knex.fn.now();
+        return review;
+      });
+
       // Inserts seed entries
       let i_reviews = await knex("reviews").insert(reviews);
       await knex.raw("select setval('reviews_id_seq', max(id)) from reviews");

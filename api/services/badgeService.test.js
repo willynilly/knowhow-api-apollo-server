@@ -31,7 +31,9 @@ afterAll(async () => {
 describe("BadgeService", () => {
   describe("createBadgeByAuthorUserIdAndAchievement(authorUserId, achievement)", () => {
     beforeEach(async () => {
-      authorUser = await userService._createByEmailAddress("someemailaddress");
+      authorUser = await userService._createByEmailAddress(
+        "someemailaddress@quietsimple.com"
+      );
       achievement = "some achievement";
     });
 

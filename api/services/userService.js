@@ -8,6 +8,8 @@ const UserPhoneNumberUnverifiedError = require("./errors/userEmailAddressUnverif
 const KnexDbService = require("./knexDbService");
 const TokenService = require("./tokenService");
 const PasswordService = require("./passwordService");
+const EmailService = require("./emailService");
+const PhoneService = require("./phoneService");
 
 const TABLE_NAME = "users";
 const ENTITY_NAME = "user";
@@ -17,9 +19,14 @@ class UserService extends KnexDbService {
     super(knexDb, TABLE_NAME, ENTITY_NAME);
     this.tokenService = new TokenService();
     this.passwordService = new PasswordService();
+    this.emailService = new EmailService();
+    this.phoneService = new PhoneService();
   }
 
   async registerByEmailAddressAndPassword(emailAddress, password) {
+    if (!this.emailService.isValidEmailAddress(emailAddress)) {
+      throw Error("The following email address is invalid: " + emailAddress);
+    }
     const oldUser = await this.findFirstBy({
       email_address: emailAddress,
     });
@@ -34,17 +41,21 @@ class UserService extends KnexDbService {
       emailAddress,
       password
     );
-    return { jwt: this.tokenService.createUserCanVerifyEmailAddressJWT(user) };
+    await this.emailService.sendEmailToRegisterByEmailAddress(user);
+    return true;
   }
 
   async registerByPhoneNumberAndPassword(phoneNumber, password) {
+    if (!this.phoneService.isValidPhoneNumber(phoneNumber)) {
+      throw Error("The following phone number is invalid: " + phoneNumber);
+    }
     const oldUser = await this.findFirstBy({
-      email_address: emailAddress,
+      phone_number: phoneNumber,
     });
     if (oldUser) {
       throw new UserAlreadyRegisteredError(
-        "A user is already registered for the email address: " +
-          emailAddress +
+        "A user is already registered for the phone number: " +
+          phoneNumber +
           "."
       );
     }
@@ -52,7 +63,8 @@ class UserService extends KnexDbService {
       phoneNumber,
       password
     );
-    return { jwt: this.tokenService.createUserCanVerifyEmailAddressJWT(user) };
+    await this.phoneService.sendSMSToRegisterByPhoneNumber(user);
+    return true;
   }
 
   async verifyEmailAddress(userId) {
@@ -69,12 +81,10 @@ class UserService extends KnexDbService {
     }
     user.is_verified_by_email_address = true;
     const updatedUser = await this.update(user);
-    if (updatedUser) {
-      // send the user back a login token
-      return { jwt: this.tokenService.createUserAuthenticatedJWT(user) };
-    } else {
+    if (!updatedUser) {
       throw Error("Could not update email verification.");
     }
+    return true;
   }
 
   async verifyPhoneNumber(userId) {
@@ -91,15 +101,16 @@ class UserService extends KnexDbService {
     }
     user.is_verified_by_phone_number = true;
     const updatedUser = await this.update(user);
-    if (updatedUser) {
-      // send the user back a login token
-      return { jwt: this.tokenService.createUserAuthenticatedJWT(user) };
-    } else {
+    if (!updatedUser) {
       throw Error("Could not update phone number verification.");
     }
+    return true;
   }
 
   async loginByEmailAddressAndPassword(emailAddress, password) {
+    if (!this.emailService.isValidEmailAddress(emailAddress)) {
+      throw Error("The following email address is invalid: " + emailAddress);
+    }
     const user = await this.findFirstBy({
       email_address: emailAddress,
     });
@@ -134,10 +145,14 @@ class UserService extends KnexDbService {
         "The password is invalid for the user."
       );
     }
-    return { jwt: this.tokenService.createUserAuthenticatedJWT(user) };
+    const jwt = await this.tokenService.createLoginByEmailAddressJWT(user);
+    return { jwt: jwt };
   }
 
   async loginByPhoneNumberAndPassword(phoneNumber, password) {
+    if (!this.phoneService.isValidPhoneNumber(phoneNumber)) {
+      throw Error("The following phone number is invalid: " + phoneNumber);
+    }
     const user = await this.findFirstBy({
       phone_number: phoneNumber,
     });
@@ -170,10 +185,14 @@ class UserService extends KnexDbService {
         "The password is invalid for the user."
       );
     }
-    return { jwt: this.tokenService.createUserAuthenticatedJWT(user) };
+    const jwt = await this.tokenService.createLoginByPhoneNumberJWT(user);
+    return { jwt: jwt };
   }
 
   async resetPasswordByEmailAddress(emailAddress) {
+    if (!this.emailService.isValidEmailAddress(emailAddress)) {
+      throw Error("The following email address is invalid: " + emailAddress);
+    }
     const user = await this.findFirstBy({
       email_address: emailAddress,
     });
@@ -191,10 +210,14 @@ class UserService extends KnexDbService {
           "."
       );
     }
-    return { jwt: this.tokenService.createUserCanResetPasswordJWT(user) };
+    await this.emailService.sendEmailToResetPassword(user);
+    return true;
   }
 
   async resetPasswordByPhoneNumber(phoneNumber) {
+    if (!this.phoneService.isValidPhoneNumber(phoneNumber)) {
+      throw Error("The following phone number is invalid: " + phoneNumber);
+    }
     const user = await this.findFirstBy({
       phone_number: phoneNumber,
     });
@@ -212,7 +235,8 @@ class UserService extends KnexDbService {
           "."
       );
     }
-    return { jwt: this.tokenService.createUserCanResetPasswordJWT(user) };
+    await this.phoneService.sendSMSToResetPassword(user);
+    return true;
   }
 
   async updatePassword(userId, password) {
@@ -281,6 +305,20 @@ class UserService extends KnexDbService {
     phoneNumber,
     password
   ) {
+    if (
+      emailAddress &&
+      emailAddress != "" &&
+      !this.emailService.isValidEmailAddress(emailAddress)
+    ) {
+      throw Error("The following email address is invalid: " + emailAddress);
+    }
+    if (
+      phoneNumber &&
+      phoneNumber != "" &&
+      !this.phoneService.isValidPhoneNumber(phoneNumber)
+    ) {
+      throw Error("The following phone number is invalid: " + phoneNumber);
+    }
     const saltedPasswordHash =
       await this.passwordService.createSaltedPasswordHash(password);
 

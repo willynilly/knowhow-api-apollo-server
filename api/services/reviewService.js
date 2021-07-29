@@ -45,6 +45,9 @@ class ReviewService extends KnexDbService {
     requesterInvite,
     reviewerUserId
   ) {
+    if (requesterUserId == reviewerUserId) {
+      throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
+    }
     const hasBadge = await this.badgeService.has(badgeId);
     if (!hasBadge) {
       throw Error(CANNOT_CREATE_REVIEW_INVALID_BADGE_ID);
@@ -90,7 +93,7 @@ class ReviewService extends KnexDbService {
     const reviewerUser = await this.userService.findFirstBy({
       email_address: reviewerEmailAddress,
     });
-    if (!reviewerUser) {
+    if (!reviewerUser || requesterUserId == reviewerUser.id) {
       throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
     }
     if (!requesterInvite) {
@@ -126,7 +129,7 @@ class ReviewService extends KnexDbService {
     const reviewerUser = await this.userService.findFirstBy({
       phone_number: reviewerPhoneNumber,
     });
-    if (!reviewerUser) {
+    if (!reviewerUser || requesterUserId == reviewerUser.id) {
       throw Error(CANNOT_CREATE_REVIEW_INVALID_REVIEWER_USER_ID);
     }
     if (!requesterInvite) {
@@ -145,26 +148,29 @@ class ReviewService extends KnexDbService {
     return this.create(review);
   }
 
-  async doReview(reviewId, isApproved, isDenied, reviewerComment) {
-    const review = this.findById(reviewId);
+  async doReview(reviewId, isApproved, reviewerComment) {
+    const review = await this.findById(reviewId);
     if (!review) {
       throw Error(CANNOT_DO_REVIEW_INVALID_REVIEW_ID);
     }
     review.is_approved = isApproved;
-    review.is_denied = isDenied;
+    review.reviewed_date = this.knexDb.fn.now();
+
     review.reviewer_comment = reviewerComment;
     review.reviewer_comment_date = this.knexDb.fn.now();
-    return this.update(review);
+    await this.update(review);
+    return true;
   }
 
   async replyReview(reviewId, requesterComment) {
-    const review = this.findById(reviewId);
+    const review = await this.findById(reviewId);
     if (!review) {
       throw Error(CANNOT_REPLY_REVIEW_INVALID_REVIEW_ID);
     }
     review.requester_comment = requesterComment;
     review.requester_comment_date = this.knexDb.fn.now();
-    return this.update(review);
+    await this.update(review);
+    return true;
   }
 }
 

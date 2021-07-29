@@ -27,7 +27,7 @@ class TestDb {
       restartIdentity: true,
       ignoreTables: [],
     };
-    return knexCleaner.clean(this.knex, knexCleanerOptions);
+    return await knexCleaner.clean(this.knex, knexCleanerOptions);
   }
 
   async destroy() {

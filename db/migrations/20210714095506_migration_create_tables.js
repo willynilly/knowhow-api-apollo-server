@@ -58,15 +58,15 @@ exports.up = function (knex) {
         .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
+
       table.boolean("is_approved").notNullable().defaultTo(false);
-      table.boolean("is_denied").notNullable().defaultTo(false);
-      table.boolean("is_not_reviewed").notNullable().defaultTo(false);
       table.boolean("approval_is_expired").notNullable().defaultTo(false);
       table.boolean("denial_is_expired").notNullable().defaultTo(false);
 
+      table.timestamp("reviewed_date");
+      table.timestamp("review_due_date");
       table.timestamp("approval_expiration_date");
       table.timestamp("denial_expiration_date");
-      table.timestamp("review_due_date");
 
       table.text("requester_invite").notNullable().defaultTo("");
       table.timestamp("requester_invite_date");

@@ -23,14 +23,14 @@ const typeDefs = gql`
     registerUserByEmailAddressAndPassword(
       email_address: String!
       password: String!
-    ): JWT!
+    ): Boolean!
     registerUserByPhoneNumberAndPassword(
       phone_number: String!
       password: String!
-    ): JWT!
+    ): Boolean!
 
-    verifyEmailAddress(jwt: String!): JWT!
-    verifyPhoneNumber(jwt: String!): JWT!
+    verifyEmailAddress: Boolean!
+    verifyPhoneNumber: Boolean!
 
     loginByEmailAddressAndPassword(
       email_address: String!
@@ -41,11 +41,11 @@ const typeDefs = gql`
       password: String!
     ): JWT!
 
-    resetPasswordByEmailAddress(email_address: String!): JWT!
-    resetPasswordByPhoneNumber(phone_number: String!): JWT!
+    resetPasswordByEmailAddress(email_address: String!): Boolean!
+    resetPasswordByPhoneNumber(phone_number: String!): Boolean!
     updatePassword(update_password_input: UpdatePasswordInput): Boolean!
 
-    updateUser(update_user_input: UpdateUserInput): User!
+    updateUser(update_user_input: UpdateUserInput): Boolean!
     deleteUser(id: String): Boolean!
 
     createBadge(create_badge_input: CreateBadgeInput): Badge!
@@ -60,8 +60,8 @@ const typeDefs = gql`
     inviteReviewByPhoneNumber(
       invite_review_by_phone_number_input: InviteReviewByPhoneNumberInput
     ): Review!
-    doReview(do_review_input: DoReviewInput): Review!
-    replyReview(reply_review_input: ReplyReviewInput): Review!
+    doReview(do_review_input: DoReviewInput): Boolean!
+    replyReview(reply_review_input: ReplyReviewInput): Boolean!
     deleteReview(id: String): Boolean!
   }
 
@@ -69,16 +69,13 @@ const typeDefs = gql`
     id: String
     email_address: String
     phone_number: String
-
     first_name: String
     last_name: String
     description: String
-
     is_admin: Boolean
     is_verified_by_email_address: Boolean
     is_verified_by_phone_number: Boolean
     is_active: Boolean
-
     created_date: Date
     updated_date: Date
   }
@@ -103,9 +100,7 @@ const typeDefs = gql`
     id: String
     achievement: String
     author: User
-
     is_active: Boolean
-
     created_date: Date
     updated_date: Date
   }
@@ -121,15 +116,12 @@ const typeDefs = gql`
     requester: User
     reviewer: User
 
-    is_not_reviewed: Boolean
     review_due_date: Date
     reviewed_date: Date
 
     is_approved: Boolean
     approval_is_expired: Boolean
     approval_expiration_date: Date
-
-    is_denied: Boolean
     denial_is_expired: Boolean
     denial_expiration_date: Date
 
@@ -143,7 +135,6 @@ const typeDefs = gql`
     requester_comment_date: Date
 
     is_active: Boolean
-
     created_date: Date
     updated_date: Date
   }
@@ -172,7 +163,6 @@ const typeDefs = gql`
   input DoReviewInput {
     review_id: String!
     is_approved: Boolean!
-    is_denied: Boolean!
     reviewer_comment: String
   }
 

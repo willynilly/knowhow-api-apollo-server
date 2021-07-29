@@ -43,7 +43,7 @@ How to Run Tests for all test files once
 3. Select "Jest single run all tests" from the Launch program dropdown menu
 4. Press the green play button at the top next to "Jest single run all tests" 
 
-How to Run a Test For A Specifc test file
+How to Run a Test For A Specific test file
 1. Open a file ending in *.test.js in Visual Studio Code
 2. Click on the Run and Debug button in Visual Studio Code
 3. Select "Jest watch current file"from the Launch program dropdown menu
@@ -55,4 +55,22 @@ How to Create a Unit test for a database service
 3. Make sure that you reset the database after every test
 4. Look at the knexDbService.test.js for an example of how you can create temproary tables and drop them after the test.
 5. For examples of unit tests that do not use TestDb class, check out the passwordService.test.js
+
+How to Export the GraphQL schema and load it into Postman
+1. Make sure the application is launched (by click the Launch program button in Visual Studio Code, or by running npm run from Terminal)
+2. The from terminal run: npm run export-schema 
+3. This will create a file ./graphql/exports/schema.graphql
+4. In Postman, create or select an API
+5. Then under the Define tab in Postman, select GraphQL.
+6. The paste the contents of ./graphql/exports/schema.graphql into the box.
+7. Then you can generate a collection based on this schema by clicking "Generate Schema" button
+8. If you already have a generated schema, and want to update the the endpoints based on a schema change:
+8.1 Under the Collections tab
+8.2 Click on an endpoint
+8.3 Click the Body tab
+8.4 Select GraphQL
+8.5 Select the API you made or updated
+8.6 Click the refresh button. This will enable syntax checking using the new schema, BUT IT WILL NOT CHANGE THE CODE.
+8.7 Look to see if the current query violates the new schema syntax (look for the red underline)
+8.8 Update the query AND the data sent to fit the new schema.
 

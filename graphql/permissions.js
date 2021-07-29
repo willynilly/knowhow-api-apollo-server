@@ -7,13 +7,16 @@ const createHasUserRoleRule = (roleName) => {
   });
 };
 
-const canResetPassword = createHasUserRoleRule("can_reset_password");
-const canVerifyEmailAddress = createHasUserRoleRule("can_verify_email_address");
-const canVerifyPhoneNumber = createHasUserRoleRule("can_verify_phone_number");
 const isAuthenticated = createHasUserRoleRule("authenticated");
 const isAdmin = createHasUserRoleRule("admin");
 
-const isUserForUpdatePassword = rule({ cache: "contextual" })(
+const isAnyone = rule({ cache: "contextual" })(
+  async (parent, args, context, info) => {
+    return true;
+  }
+);
+
+const isUserForUpdatePassword = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     return (
       context.userId !== null &&
@@ -22,7 +25,7 @@ const isUserForUpdatePassword = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForUpdateUser = rule({ cache: "contextual" })(
+const isUserForUpdateUser = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     return (
       context.userId !== null && args.update_user_input.id == context.userId
@@ -36,7 +39,7 @@ const isUserForDeleteUser = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForCreateBadge = rule({ cache: "contextual" })(
+const isUserForCreateBadge = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     return (
       context.userId !== null &&
@@ -45,7 +48,7 @@ const isUserForCreateBadge = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForDeleteBadge = rule({ cache: "contextual" })(
+const isUserForDeleteBadge = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     let badgeService = context.dataSources.knowHowAPI.badgeService;
     badge = await badgeService.findById(args.id);
@@ -56,10 +59,10 @@ const isUserForDeleteBadge = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForInviteReview = rule({ cache: "contextual" })(
+const isUserForInviteReview = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     if (args.invite_review_by_user_id_input) {
-      requester_user_id = args.invite_review_by_user_id_input.requester_user_id;
+      requesterUserId = args.invite_review_by_user_id_input.requester_user_id;
     } else if (args.invite_review_by_email_address_input) {
       requesterUserId =
         args.invite_review_by_email_address_input.requester_user_id;
@@ -77,10 +80,10 @@ const isUserForInviteReview = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForDoReview = rule({ cache: "contextual" })(
+const isUserForDoReview = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
-    review = await reviewService.findById(args.id);
+    const review = await reviewService.findById(args.do_review_input.review_id);
     if (!review) {
       return false;
     }
@@ -88,10 +91,12 @@ const isUserForDoReview = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForReplyReview = rule({ cache: "contextual" })(
+const isUserForReplyReview = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
-    review = await reviewService.findById(args.id);
+    const review = await reviewService.findById(
+      args.reply_review_input.review_id
+    );
     if (!review) {
       return false;
     }
@@ -101,10 +106,10 @@ const isUserForReplyReview = rule({ cache: "contextual" })(
   }
 );
 
-const isUserForDeleteReview = rule({ cache: "contextual" })(
+const isUserForDeleteReview = rule({ cache: "strict" })(
   async (parent, args, context, info) => {
     let reviewService = context.dataSources.knowHowAPI.reviewService;
-    review = await reviewService.findById(args.id);
+    const review = await reviewService.findById(args.id);
     if (!review) {
       return false;
     }
@@ -130,32 +135,89 @@ const permissions = shield({
     reviewsByRequester: isAuthenticated,
     reviewsByReviewer: isAuthenticated,
   },
+  User: {
+    id: isAuthenticated,
+    email_address: isAdmin,
+    phone_number: isAdmin,
+    first_name: isAuthenticated,
+    last_name: isAuthenticated,
+    description: isAuthenticated,
+    is_admin: isAdmin,
+    is_verified_by_email_address: isAdmin,
+    is_verified_by_phone_number: isAdmin,
+    is_active: isAdmin,
+    created_date: isAuthenticated,
+    updated_date: isAuthenticated,
+  },
+  Badge: {
+    id: isAuthenticated,
+    achievement: isAuthenticated,
+    author: isAuthenticated,
+    is_active: isAdmin,
+    created_date: isAuthenticated,
+    updated_date: isAuthenticated,
+  },
+  Review: {
+    id: isAuthenticated,
+    badge: isAuthenticated,
+    requester: isAuthenticated,
+    reviewer: isAuthenticated,
+
+    review_due_date: isAuthenticated,
+    reviewed_date: isAuthenticated,
+
+    is_approved: isAuthenticated,
+    approval_is_expired: isAuthenticated,
+    approval_expiration_date: isAuthenticated,
+
+    denial_is_expired: isAuthenticated,
+    denial_expiration_date: isAuthenticated,
+
+    reviewer_comment: isAuthenticated,
+    reviewer_comment_date: isAuthenticated,
+
+    requester_invite: isAuthenticated,
+    requester_invite_date: isAuthenticated,
+
+    requester_comment: isAuthenticated,
+    requester_comment_date: isAuthenticated,
+
+    is_active: isAdmin,
+    created_date: isAuthenticated,
+    updated_date: isAuthenticated,
+  },
   Mutation: {
-    registerUserByEmailAddressAndPassword: not(isAuthenticated),
-    registerUserByPhoneNumberAndPassword: not(isAuthenticated),
+    registerUserByEmailAddressAndPassword: isAnyone,
+    registerUserByPhoneNumberAndPassword: isAnyone,
 
-    verifyEmailAddress: canVerifyEmailAddress,
-    verifyPhoneNumber: canVerifyPhoneNumber,
+    verifyEmailAddress: isAnyone,
+    verifyPhoneNumber: isAnyone,
 
-    loginByEmailAddressAndPassword: not(isAuthenticated),
-    loginByPhoneNumberAndPassword: not(isAuthenticated),
+    loginByEmailAddressAndPassword: isAnyone,
+    loginByPhoneNumberAndPassword: isAnyone,
 
-    resetPasswordByEmailAddress: not(isAuthenticated),
-    resetPasswordByPhoneNumber: not(isAuthenticated),
-    updatePassword: and(
-      or(canResetPassword, isAuthenticated),
-      isUserForUpdatePassword
-    ),
+    resetPasswordByEmailAddress: isAnyone,
+    resetPasswordByPhoneNumber: isAnyone,
 
+    updatePassword: or(isAdmin, and(isAuthenticated, isUserForUpdatePassword)),
     updateUser: or(isAdmin, and(isAuthenticated, isUserForUpdateUser)),
     deleteUser: or(isAdmin, and(isAuthenticated, isUserForDeleteUser)),
 
     createBadge: or(isAdmin, and(isAuthenticated, isUserForCreateBadge)),
     deleteBadge: or(isAdmin, and(isAuthenticated, isUserForDeleteBadge)),
 
-    inviteReviewByUserId: and(isAuthenticated, isUserForInviteReview),
-    inviteReviewByEmailAddress: and(isAuthenticated, isUserForInviteReview),
-    inviteReviewByPhoneNumber: and(isAuthenticated, isUserForInviteReview),
+    inviteReviewByUserId: or(
+      isAdmin,
+      and(isAuthenticated, isUserForInviteReview)
+    ),
+    inviteReviewByEmailAddress: or(
+      isAdmin,
+      and(isAuthenticated, isUserForInviteReview)
+    ),
+    inviteReviewByPhoneNumber: or(
+      isAdmin,
+      and(isAuthenticated, isUserForInviteReview)
+    ),
 
     doReview: and(isAuthenticated, isUserForDoReview),
     replyReview: and(isAuthenticated, isUserForReplyReview),
